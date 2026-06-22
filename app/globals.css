@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+@theme {
+  --color-blossom-50: #fdf2f4;
+  --color-blossom-100: #fce7eb;
+  --color-blossom-200: #f9d0d9;
+  --color-blossom-300: #f4a9ba;
+  --color-blossom-400: #ec7a96;
+  --color-blossom-500: #df5276;
+  --color-blossom-600: #c9345c;
+  --color-blossom-700: #a82549;
+  --color-blossom-800: #8c2342;
+  --color-blossom-900: #77223c;
+  --color-cocoa-600: #6b3e2e;
+  --color-cocoa-700: #5a3328;
+  --color-cocoa-800: #4a2a22;
+  --font-heading: var(--font-cormorant);
+  --font-body: var(--font-lato);
+  --font-accent: var(--font-nunito);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  color: var(--color-cocoa-800);
+  background-color: var(--color-blossom-50);
+}
+
+.font-heading {
+  font-family: var(--font-heading), Georgia, serif;
+}
+
+.font-accent {
+  font-family: var(--font-accent), system-ui, sans-serif;
+}
