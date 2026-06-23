@@ -11,3 +11,13 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model ImageWithCaption {
+  id            String   @id @default(uuid())
+  product_title String   @default("no title yet.")
+  caption       String   @default("no caption yet.")
+  img_url       String
+  price         Decimal?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+}
