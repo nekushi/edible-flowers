@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   console.log(`FROM ROUTE`);
   console.log(data);
 
-  const title = String(data.get("ttile") ?? "");
+  const title = String(data.get("title") ?? "");
   const caption = String(data.get("caption") ?? "");
   const price = String(data.get("price") ?? "");
   const img_file = data.get("img-file");
