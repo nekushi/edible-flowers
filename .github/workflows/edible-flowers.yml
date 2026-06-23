@@ -27,5 +27,10 @@ jobs:
       - name: Generate prisma client
         run: npx prisma generate
 
+      - name: Debug env
+        run: |
+          echo "URL set: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL != '' }}"
+          echo "KEY set: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY != '' }}"
+
       - name: Build project
         run: npm run build
