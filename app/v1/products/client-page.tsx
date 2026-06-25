@@ -1,15 +1,50 @@
 "use client";
 
-import { TypeImageWithCaption } from "@/dal/menu/products/get/images-with-caption";
-import { Activity, useState } from "react";
+import { TypeImageWithTitle } from "@/dal/menu/products/get/images-with-caption";
+import { Activity, useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function EfMenuProductsClient({
   imagesWithCaption,
 }: {
-  imagesWithCaption: TypeImageWithCaption[];
+  imagesWithCaption: TypeImageWithTitle[];
 }) {
-  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  const [imagesWithTitle, setImagesWithTitle] =
+    useState<TypeImageWithTitle[]>(imagesWithCaption);
+
+  const [titleSearch, setTitleSearch] = useState<string>("");
+
+  const [isAddProductModalOpen, setIsAddProductModalOpen] =
+    useState<boolean>(false);
+
+  const handleTitleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitleSearch(e.target.value);
+  };
+
+  async function fetchProducts(title: string) {
+    const params = new URLSearchParams({
+      title,
+    });
+
+    console.log(params.toString());
+
+    const response = await fetch(`/api/product/search?${params.toString()}`);
+    const data = await response.json();
+
+    const imagesWithTitleArray: TypeImageWithTitle[] = data.searchProductTitle;
+
+    setImagesWithTitle(imagesWithTitleArray);
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchProducts(titleSearch);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [titleSearch]);
 
   const handleOpenAddProductModal = () => {
     setIsAddProductModalOpen(true);
@@ -20,8 +55,6 @@ export default function EfMenuProductsClient({
 
   return (
     <div className="mx-24 space-y-8">
-      {/* <pre>{JSON.stringify(imagesWithCaption, null, 2)}</pre> */}
-
       <h1>This is edible flowers menu products.</h1>
       <section className="border flex justify-between">
         <label htmlFor="product-search">
@@ -30,6 +63,7 @@ export default function EfMenuProductsClient({
             type="text"
             name=""
             id="product-search"
+            onChange={handleTitleSearchChange}
             className="border w-[32rem]"
           />
         </label>
@@ -44,12 +78,12 @@ export default function EfMenuProductsClient({
         <h1>Product Gallery</h1>
         {/* loop through ImageWithCaption db, card type */}
         <div>
-          {imagesWithCaption.map((imageWithCaption: TypeImageWithCaption) => (
-            <div key={imageWithCaption.id}>
+          {imagesWithTitle.map((imageWithTitle: TypeImageWithTitle) => (
+            <div key={imageWithTitle.id}>
               <article className="group overflow-hidden rounded-2xl border border-blossom-100 bg-blossom-50 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div className="relative aspect-4/3 overflow-hidden">
                   <Image
-                    src={imageWithCaption.img_url}
+                    src={imageWithTitle.img_url}
                     alt={"edible-flower"}
                     fill
                     loading="lazy"
@@ -59,13 +93,13 @@ export default function EfMenuProductsClient({
                 </div>
                 <div className="p-5 sm:p-6">
                   <h3 className="font-heading text-xl font-semibold text-cocoa-800">
-                    {imageWithCaption.product_title}
+                    {imageWithTitle.product_title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-cocoa-600">
-                    {imageWithCaption.caption}
+                    {imageWithTitle.caption}
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-cocoa-600">
-                    {String(imageWithCaption.createdAt)}
+                    {String(imageWithTitle.createdAt)}
                   </p>
                 </div>
               </article>
@@ -147,7 +181,7 @@ function AddProductModal({ onCloseModal }: { onCloseModal: () => void }) {
   };
 
   return (
-    <div className="border absolute w-xl h-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4">
+    <div className="border absolute z-50 w-xl h-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4">
       <form action="" onSubmit={postProduct} className="border">
         <h1>Add product</h1>
 
