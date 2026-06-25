@@ -25,7 +25,7 @@ export default function EfMenuLayout({
           </ul>
         </nav> */}
       </div>
-      <div className="border col-span-10">{children}</div>
+      <div className="border col-span-10 overflow-y-scroll">{children}</div>
     </div>
   );
 }
