@@ -105,6 +105,7 @@ export default function ImageWithTitleJSX({
 
       <Activity mode={isDeleteWarningOpen ? "visible" : "hidden"}>
         <DeleteWarningModal
+          productId={imageWithTitle.id}
           productTitle={imageWithTitle.product_title}
           onClose={handleCloseDeleteWarning}
         />
@@ -114,12 +115,43 @@ export default function ImageWithTitleJSX({
 }
 
 function DeleteWarningModal({
+  productId,
   productTitle,
   onClose,
 }: {
+  productId: string;
   productTitle: string;
   onClose: () => void;
 }) {
+  const router = useRouter();
+
+  const handleDeleteProductSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+
+    console.log(`bypass here`);
+
+    try {
+      const params = new URLSearchParams({
+        id: productId,
+      });
+
+      const response = await fetch(`/api/product/delete?${params.toString()}`, {
+        method: "DELETE",
+        body: params,
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      onClose();
+
+      router.refresh();
+    } catch (error) {
+      console.log(`ERROR: ${error}`);
+    }
+  };
   return (
     <ModalShell title="Delete product?" onClose={onClose}>
       <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4">
@@ -147,16 +179,31 @@ function DeleteWarningModal({
         </div>
       </div>
       <div className="mt-6 flex flex-wrap justify-end gap-3">
-        <button
-          type="button"
-          onClick={onClose}
-          className={secondaryButtonClassName}
-        >
-          Cancel
-        </button>
-        <button type="button" className={dangerButtonClassName}>
-          Delete
-        </button>
+        <form onSubmit={handleDeleteProductSubmit}>
+          <div className="hidden">
+            <label htmlFor={`id`} className={labelClassName}>
+              Product uuid
+              <input
+                type="text"
+                name="id"
+                id={`id`}
+                defaultValue={productId}
+                required
+                className={inputClassName}
+              />
+            </label>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className={secondaryButtonClassName}
+          >
+            Cancel
+          </button>
+          <button type="submit" className={dangerButtonClassName}>
+            Delete
+          </button>
+        </form>
       </div>
     </ModalShell>
   );
