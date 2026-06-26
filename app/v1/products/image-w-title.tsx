@@ -15,6 +15,8 @@ import {
   secondaryButtonClassName,
 } from "./ui/shared";
 
+import { useRouter } from "next/navigation";
+
 export default function ImageWithTitleJSX({
   imageWithTitle,
 }: {
@@ -74,7 +76,7 @@ export default function ImageWithTitleJSX({
             src={imageWithTitle.img_url}
             alt={imageWithTitle.product_title || "Edible flower product"}
             fill
-            loading="lazy"
+            loading="eager"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -161,6 +163,7 @@ function DeleteWarningModal({
 }
 
 type TypeEditProductForm = {
+  id: string;
   title: string;
   caption: string;
 };
@@ -172,10 +175,11 @@ function EditProductModal({
   imageWithTitle: TypeImageWithTitle;
   onCloseEditProductModal: () => void;
 }) {
-  const fieldId = String(imageWithTitle.id);
+  const router = useRouter();
 
   const [form, setForm] = useState<TypeEditProductForm>({
-    title: imageWithTitle.product_title,
+    id: imageWithTitle.id ?? "",
+    title: imageWithTitle.product_title ?? "",
     caption: imageWithTitle.caption ?? "",
   });
 
@@ -187,43 +191,77 @@ function EditProductModal({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const formdata = new FormData();
+
+    formdata.append("updated-id", form.id);
+    formdata.append("updated-title", form.title);
+    formdata.append("updated-caption", form.caption);
+
+    try {
+      const response = await fetch(`/api/product/update`, {
+        method: "PUT",
+        body: formdata,
+      });
+
+      const data = await response.json();
+      console.log(data.message);
+      console.log(data.updatedImageWithCaption);
+      router.refresh();
+
+      onCloseEditProductModal();
+    } catch (error) {
+      console.log(`ERROR: ${error}`);
+    }
   };
 
   return (
     <ModalShell title="Edit product" onClose={onCloseEditProductModal}>
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-        <div>
-          <label htmlFor={`edit-title-${fieldId}`} className={labelClassName}>
-            Product title
+        <div className="hidden">
+          <label htmlFor={`id`} className={labelClassName}>
+            Product uuid
+            <input
+              type="text"
+              name="id"
+              id={`id`}
+              value={form.id}
+              onChange={handleFormChange}
+              required
+              className={inputClassName}
+            />
           </label>
-          <input
-            type="text"
-            name="title"
-            id={`edit-title-${fieldId}`}
-            value={form.title}
-            onChange={handleFormChange}
-            required
-            className={inputClassName}
-          />
         </div>
 
         <div>
-          <label
-            htmlFor={`edit-caption-${fieldId}`}
-            className={labelClassName}
-          >
-            Product caption
+          <label htmlFor={`product-title`} className={labelClassName}>
+            Product title
+            <input
+              type="text"
+              name="title"
+              id={`product-title`}
+              value={form.title}
+              onChange={handleFormChange}
+              required
+              className={inputClassName}
+            />
           </label>
-          <input
-            type="text"
-            name="caption"
-            id={`edit-caption-${fieldId}`}
-            value={form.caption}
-            onChange={handleFormChange}
-            className={inputClassName}
-          />
+        </div>
+
+        <div>
+          <label htmlFor={`product-caption`} className={labelClassName}>
+            Product caption
+            <input
+              type="text"
+              name="caption"
+              id={`product-caption`}
+              value={form.caption}
+              onChange={handleFormChange}
+              className={inputClassName}
+            />
+          </label>
         </div>
 
         <div>

@@ -29,6 +29,10 @@ export default function EfMenuProductsClient({
     setTitleSearch(e.target.value);
   };
 
+  useEffect(() => {
+    setImagesWithTitle(imagesWithCaption);
+  }, [imagesWithCaption]);
+
   async function fetchProducts(title: string) {
     const params = new URLSearchParams({
       title,
@@ -135,7 +139,9 @@ export default function EfMenuProductsClient({
         </section>
 
         <Activity mode={isAddProductModalOpen ? "visible" : "hidden"}>
-          <AddProductModal onCloseAddProductModal={handleCloseAddProductModal} />
+          <AddProductModal
+            onCloseAddProductModal={handleCloseAddProductModal}
+          />
         </Activity>
       </div>
     </div>
