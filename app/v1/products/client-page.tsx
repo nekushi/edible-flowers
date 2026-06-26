@@ -2,7 +2,15 @@
 
 import { TypeImageWithTitle } from "@/dal/menu/products/get/images-with-caption";
 import { Activity, useEffect, useState } from "react";
-import Image from "next/image";
+import ImageWithTitleJSX from "./image-w-title";
+import {
+  fileInputClassName,
+  inputClassName,
+  labelClassName,
+  ModalShell,
+  primaryButtonClassName,
+  secondaryButtonClassName,
+} from "./ui/shared";
 
 export default function EfMenuProductsClient({
   imagesWithCaption,
@@ -54,60 +62,81 @@ export default function EfMenuProductsClient({
   };
 
   return (
-    <div className="mx-24 space-y-8">
-      <h1>This is edible flowers menu products.</h1>
-      <section className="border flex justify-between">
-        <label htmlFor="product-search">
-          <span>Search product: </span>
-          <input
-            type="text"
-            name=""
-            id="product-search"
-            onChange={handleTitleSearchChange}
-            className="border w-[32rem]"
-          />
-        </label>
-        <button onClick={handleOpenAddProductModal} className="border">
-          Add product
-        </button>
-        <Activity mode={isAddProductModalOpen ? "visible" : "hidden"}>
-          <AddProductModal
-            onCloseAddProductModal={handleCloseAddProductModal}
-          />
-        </Activity>
-      </section>
-      <div className="border">
-        <h1>Product Gallery</h1>
-        {/* loop through ImageWithCaption db, card type */}
-        <div>
-          {imagesWithTitle.map((imageWithTitle: TypeImageWithTitle) => (
-            <div key={imageWithTitle.id}>
-              <article className="group overflow-hidden rounded-2xl border border-blossom-100 bg-blossom-50 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <div className="relative aspect-4/3 overflow-hidden">
-                  <Image
-                    src={imageWithTitle.img_url}
-                    alt={"edible-flower"}
-                    fill
-                    loading="lazy"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-5 sm:p-6">
-                  <h3 className="font-heading text-xl font-semibold text-cocoa-800">
-                    {imageWithTitle.product_title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-cocoa-600">
-                    {imageWithTitle.caption}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-cocoa-600">
-                    {String(imageWithTitle.createdAt)}
-                  </p>
-                </div>
-              </article>
+    <div className="min-h-full bg-linear-to-b from-blossom-100 via-blossom-50 to-white">
+      <div className="mx-auto max-w-7xl space-y-10 px-4 py-8 sm:px-6 lg:px-8">
+        <header>
+          <p className="font-accent text-sm font-semibold uppercase tracking-widest text-blossom-600">
+            Menu management
+          </p>
+          <h1 className="font-heading mt-2 text-3xl font-bold text-cocoa-800 sm:text-4xl">
+            Product Gallery
+          </h1>
+          <p className="mt-3 max-w-2xl text-cocoa-600">
+            Browse, search, and manage edible flower cupcake products.
+          </p>
+        </header>
+
+        <section className="rounded-2xl border border-blossom-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex-1 sm:max-w-md">
+              <label htmlFor="product-search" className={labelClassName}>
+                Search products
+              </label>
+              <input
+                type="search"
+                name="product-search"
+                id="product-search"
+                value={titleSearch}
+                onChange={handleTitleSearchChange}
+                placeholder="Search by title..."
+                className={inputClassName}
+              />
             </div>
-          ))}
-        </div>
+            <button
+              type="button"
+              onClick={handleOpenAddProductModal}
+              className={primaryButtonClassName}
+            >
+              Add product
+            </button>
+          </div>
+        </section>
+
+        <section>
+          <div className="mb-6 flex items-baseline justify-between gap-4">
+            <h2 className="font-heading text-2xl font-bold text-cocoa-800">
+              All products
+            </h2>
+            <span className="font-accent text-sm font-medium text-blossom-600">
+              {imagesWithTitle.length}{" "}
+              {imagesWithTitle.length === 1 ? "item" : "items"}
+            </span>
+          </div>
+
+          {imagesWithTitle.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-blossom-200 bg-blossom-50/50 px-6 py-16 text-center">
+              <p className="font-heading text-lg font-semibold text-cocoa-800">
+                No products found
+              </p>
+              <p className="mt-2 text-sm text-cocoa-600">
+                Try a different search term or add a new product.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {imagesWithTitle.map((imageWithTitle: TypeImageWithTitle) => (
+                <ImageWithTitleJSX
+                  key={imageWithTitle.id}
+                  imageWithTitle={imageWithTitle}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <Activity mode={isAddProductModalOpen ? "visible" : "hidden"}>
+          <AddProductModal onCloseAddProductModal={handleCloseAddProductModal} />
+        </Activity>
       </div>
     </div>
   );
@@ -125,8 +154,6 @@ function AddProductModal({
 }: {
   onCloseAddProductModal: () => void;
 }) {
-  // const [file, setFile] = useState<File | null>(null); // im not using this, am i??
-
   const [form, setForm] = useState<TypeAddProductForm>({
     title: "",
     caption: "",
@@ -134,11 +161,13 @@ function AddProductModal({
     img_file: null,
   });
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "price" ? Number(value) || 0 : value,
     }));
 
     console.log(form);
@@ -172,11 +201,6 @@ function AddProductModal({
 
     const response = await fetch("/api/product/upload", {
       method: "POST",
-      // body: JSON.stringify(form),
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
-      // thought we can convert to json a thing with type File--value vanishes upon reaching /api/route.ts
       body: formData,
     });
 
@@ -187,70 +211,82 @@ function AddProductModal({
   };
 
   return (
-    <div className="border absolute z-50 w-xl h-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4">
-      <form action="" onSubmit={postProduct} className="border">
-        <h1>Add product</h1>
-
-        <label htmlFor="product-title" className="flex flex-col">
-          <span>Product title: </span>
+    <ModalShell title="Add product" onClose={onCloseAddProductModal}>
+      <form onSubmit={postProduct} className="mt-6 space-y-5">
+        <div>
+          <label htmlFor="product-title" className={labelClassName}>
+            Product title
+          </label>
           <input
             type="text"
             name="title"
             id="product-title"
             value={form.title}
             onChange={handleFormChange}
-            className="border"
+            required
+            placeholder="Rose Garden Cupcakes"
+            className={inputClassName}
           />
-        </label>
-        <label htmlFor="product-caption" className="flex flex-col">
-          <span>Product caption: </span>
-          <input
-            type="text"
+        </div>
+
+        <div>
+          <label htmlFor="product-caption" className={labelClassName}>
+            Product caption
+          </label>
+          <textarea
             name="caption"
             id="product-caption"
             value={form.caption}
             onChange={handleFormChange}
-            className="border"
+            rows={3}
+            placeholder="A short description of this product..."
+            className={`${inputClassName} resize-y`}
           />
-        </label>
-        <label htmlFor="product-price" className="flex flex-col">
-          <span>Product price: </span>
-          <input
-            type="text"
-            name="price"
-            id="product-price"
-            value={form.price}
-            onChange={handleFormChange}
-            className="border"
-          />
-        </label>
+        </div>
 
         <div>
-          <label htmlFor="product-image" className="mb-2 block font-medium">
-            Product image:
+          <label htmlFor="product-price" className={labelClassName}>
+            Product price
+          </label>
+          <input
+            type="number"
+            name="price"
+            id="product-price"
+            value={form.price || ""}
+            onChange={handleFormChange}
+            min={0}
+            step="0.01"
+            placeholder="0.00"
+            className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="product-image" className={labelClassName}>
+            Product image
           </label>
           <input
             id="product-image"
             type="file"
-            accept=".jpg, .jpeg, .webp, .png"
+            accept=".jpg,.jpeg,.webp,.png"
             onChange={handleProductImageChange}
-            className="block w-full cursor-pointer text-sm text-slate-600 file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-emerald-600 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:file:bg-emerald-700"
+            className={`${fileInputClassName} mt-1.5`}
           />
         </div>
 
-        <div className="flex justify-evenly">
-          <button type="submit" className="border">
-            Add product
-          </button>
+        <div className="flex flex-wrap justify-end gap-3 pt-2">
           <button
-            onClick={onCloseAddProductModal}
             type="button"
-            className="border"
+            onClick={onCloseAddProductModal}
+            className={secondaryButtonClassName}
           >
-            Close
+            Cancel
+          </button>
+          <button type="submit" className={primaryButtonClassName}>
+            Add product
           </button>
         </div>
       </form>
-    </div>
+    </ModalShell>
   );
 }
