@@ -71,7 +71,9 @@ export default function EfMenuProductsClient({
           Add product
         </button>
         <Activity mode={isAddProductModalOpen ? "visible" : "hidden"}>
-          <AddProductModal onCloseModal={handleCloseAddProductModal} />
+          <AddProductModal
+            onCloseAddProductModal={handleCloseAddProductModal}
+          />
         </Activity>
       </section>
       <div className="border">
@@ -118,7 +120,11 @@ type TypeAddProductForm = {
   img_file: File | null;
 };
 
-function AddProductModal({ onCloseModal }: { onCloseModal: () => void }) {
+function AddProductModal({
+  onCloseAddProductModal,
+}: {
+  onCloseAddProductModal: () => void;
+}) {
   // const [file, setFile] = useState<File | null>(null); // im not using this, am i??
 
   const [form, setForm] = useState<TypeAddProductForm>({
@@ -236,7 +242,11 @@ function AddProductModal({ onCloseModal }: { onCloseModal: () => void }) {
           <button type="submit" className="border">
             Add product
           </button>
-          <button onClick={onCloseModal} type="button" className="border">
+          <button
+            onClick={onCloseAddProductModal}
+            type="button"
+            className="border"
+          >
             Close
           </button>
         </div>
