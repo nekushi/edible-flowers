@@ -13,17 +13,11 @@ export default function EfMenuLayout({
         <div className="flex flex-col">
           <Link href={"./dashboard"}>Dashboard</Link>
           <Link href={"./products"}>Products</Link>
+          <Link href={"./pendings"}>Pendings</Link>
+          <Link href={"./inquiries"}>Inquiries</Link>
           <Link href={"./history"}>History</Link>
           <Link href={"./settings"}>Settings</Link>
         </div>
-        {/* <nav className="border">
-          <ul>
-            <li>Dashboard</li>
-            <li>Content</li>
-            <li>History</li>
-            <li>Settings</li>
-          </ul>
-        </nav> */}
       </div>
       <div className="border col-span-10 overflow-y-scroll">{children}</div>
     </div>
