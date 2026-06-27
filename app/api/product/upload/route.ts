@@ -26,12 +26,10 @@ export async function POST(req: NextRequest) {
   }
 
   const uploadedImage = await uploadImage(img_file);
-  console.log(`uploaded image: ${uploadedImage}`);
 
   if (!uploadedImage) return; // throw error handling
 
   const imgPublicUrl = await getPublicUrl(uploadedImage);
-  console.log(`retrieved url: ${imgPublicUrl}`);
 
   const imageWithCaption = await prisma.imageWithCaption.create({
     data: {
