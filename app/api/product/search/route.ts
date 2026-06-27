@@ -10,14 +10,8 @@ export async function GET(req: NextRequest) {
 
   const title = searchParams.get("title") ?? "";
 
-  console.log(`FROM ROUTE: title`);
-  console.log(title);
-
   const searchProductTitle: TypeImageWithTitle[] =
     await getImagesWithCaption(title);
-
-  console.log(`searchProductTitle`);
-  console.log(searchProductTitle);
 
   return NextResponse.json(
     {
