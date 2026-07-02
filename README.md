@@ -2,7 +2,16 @@
 
 ## A small business website
 
-Stack:
+##### Features:
+
+- working `contact section` to be sent to admin as inquiry
+- accepting/deleting inquiries from `contact section`
+- image management CRUD for admin
+- (dashboard to track transaction record history)
+- (middleware for authentication)
+-
+
+##### Stack:
 
 - React
 - Next.js
