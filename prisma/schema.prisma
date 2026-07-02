@@ -21,3 +21,35 @@ model ImageWithCaption {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
 }
+
+// model ClientEmailRequestNotification {
+//   id String @id @default(uuid())
+
+// }
+
+model Orders {
+  id       String @id @default(uuid())
+  order_id String
+  title    String
+  caption  String
+  quantity Int
+  img_url  String
+
+  client_email_request ClientEmailRequest @relation(fields: [order_id], references: [orders_id])
+  // orders Orders @relation(fields: [orders_id], references: [order_id])
+
+  // client_email_request ClientEmailRequest[]
+}
+
+model ClientEmailRequest {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+
+  is_read   Boolean  @default(false)
+  orders_id String   @unique
+  orders    Orders[]
+  // orders Orders @relation(fields: [orders_id], references: [order_id])
+}

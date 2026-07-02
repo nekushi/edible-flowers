@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { LandingNav } from "./components/landing-nav";
 import { ScrollReveal } from "./components/scroll-reveal";
+import React, { useState } from "react";
 
 const products = [
+  // make it dynamic soon
   {
     name: "Rose Garden Cupcakes",
     description:
@@ -64,7 +68,51 @@ const socialLinks = [
   },
 ];
 
+export type TypeClientFormRequest = {
+  name: string;
+  email: string;
+  message: string;
+};
+
 export default function EfLandingPage() {
+  const [clientForm, setClientForm] = useState<TypeClientFormRequest>({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleClientFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setClientForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    console.log(clientForm);
+  };
+
+  const handleClientFormSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+
+    const response = await fetch(`/api/v1/client-email-request`, {
+      method: "POST",
+      body: JSON.stringify(clientForm),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    console.log(`data FROM LANDING PAGE`);
+    console.log(data);
+  };
+
   return (
     <>
       <LandingNav />
@@ -382,9 +430,10 @@ export default function EfLandingPage() {
             <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-16">
               <ScrollReveal delay={100}>
                 <form
-                  action={`mailto:shepabayo@gmail.com`}
-                  method="post"
+                  // action={`mailto:shepabayo@gmail.com`}
+                  // method="post"
                   encType="text/plain"
+                  onSubmit={handleClientFormSubmit}
                   className="rounded-2xl border border-blossom-200 bg-white p-6 shadow-sm sm:p-8"
                 >
                   <div className="space-y-5">
@@ -400,6 +449,8 @@ export default function EfLandingPage() {
                         id="name"
                         name="name"
                         required
+                        defaultValue={clientForm.name}
+                        onChange={handleClientFormChange}
                         className="mt-1.5 w-full rounded-lg border border-blossom-200 bg-blossom-50/50 px-4 py-2.5 text-sm text-cocoa-800 outline-none transition-colors focus:border-blossom-400 focus:ring-2 focus:ring-blossom-200"
                         placeholder="Jane Doe"
                       />
@@ -416,6 +467,8 @@ export default function EfLandingPage() {
                         id="email"
                         name="email"
                         required
+                        defaultValue={clientForm.email}
+                        onChange={handleClientFormChange}
                         className="mt-1.5 w-full rounded-lg border border-blossom-200 bg-blossom-50/50 px-4 py-2.5 text-sm text-cocoa-800 outline-none transition-colors focus:border-blossom-400 focus:ring-2 focus:ring-blossom-200"
                         placeholder="you@example.com"
                       />
@@ -432,6 +485,8 @@ export default function EfLandingPage() {
                         name="message"
                         rows={5}
                         required
+                        defaultValue={clientForm.message}
+                        onChange={handleClientFormChange}
                         className="mt-1.5 w-full resize-y rounded-lg border border-blossom-200 bg-blossom-50/50 px-4 py-2.5 text-sm text-cocoa-800 outline-none transition-colors focus:border-blossom-400 focus:ring-2 focus:ring-blossom-200"
                         placeholder="Tell us about your event, how many cupcakes you need, and any design ideas..."
                       />
