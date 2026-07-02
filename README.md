@@ -18,6 +18,10 @@ Stack:
 
 ![alt text](/public/docs/imgs/image-1.png)
 
-### Newly Added Products
+### Newly Added Products Section
 
-![alt text](/public/docs/imgs/image-1.png)
+![alt text](/public/docs/imgs/image-2.png)
+
+### Contacts Section
+
+![alt text](/public/docs/imgs/image-3.png)
