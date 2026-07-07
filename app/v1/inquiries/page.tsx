@@ -1,7 +1,19 @@
-export default function EfMenuInquiries() {
+export const dynamic = "force-dynamic";
+
+import { getInquiries } from "@/dal/menu/inquiries/get/get-inquiries";
+import { getItemsWithCaption } from "@/dal/menu/inquiries/get/get-items-with-caption";
+import EfMenuInquiriesClient from "./client-page";
+
+export default async function EfMenuInquiries() {
+  const [inquiries, itemsWithCaption] = await Promise.all([
+    getInquiries(),
+    getItemsWithCaption(),
+  ]);
+
   return (
-    <div>
-      <h1>This is edible flowers menu inquiries.</h1>
-    </div>
+    <EfMenuInquiriesClient
+      inquiries={inquiries}
+      itemsWithCaption={itemsWithCaption}
+    />
   );
 }
