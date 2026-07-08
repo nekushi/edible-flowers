@@ -7,6 +7,7 @@ export async function markingDonePending(ordersId: string) {
     },
     data: {
       is_done: true,
+      updatedAt: new Date(),
     },
   });
 

@@ -39,6 +39,7 @@ model ClientEmailRequest {
   email     String
   message   String
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   is_read   Boolean  @default(false)
   is_done   Boolean  @default(false)
