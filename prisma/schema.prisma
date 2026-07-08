@@ -41,6 +41,7 @@ model ClientEmailRequest {
   createdAt DateTime @default(now())
 
   is_read   Boolean  @default(false)
+  is_done   Boolean  @default(false)
   orders_id String   @unique
   orders    Orders[]
 }
