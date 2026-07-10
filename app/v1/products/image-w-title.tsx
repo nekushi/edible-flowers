@@ -16,6 +16,7 @@ import {
 } from "./ui/shared";
 
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ImageWithTitleJSX({
   imageWithTitle,
@@ -130,26 +131,36 @@ function DeleteWarningModal({
   ) => {
     e.preventDefault();
 
-    console.log(`bypass here`);
-
     try {
       const params = new URLSearchParams({
         id: productId,
       });
 
-      const response = await fetch(`/api/product/delete?${params.toString()}`, {
-        method: "DELETE",
-        body: params,
-      });
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(`/api/product/delete?${params.toString()}`, {
+            method: "DELETE",
+            body: params,
+          });
 
-      const data = await response.json();
-      console.log(data);
+          if (!res.ok) {
+            throw new Error("Failed to delete product.");
+          }
 
-      onClose();
-
-      router.refresh();
+          return res.json();
+        })(),
+        {
+          pending: "Deleting...",
+          success: "Product deleted successfully.",
+          error: "Something went wrong. Please try again.",
+        },
+      );
     } catch (error) {
-      console.log(`ERROR: ${error}`);
+      console.log(`$ERROR: ${error}`);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      router.refresh();
+      onClose();
     }
   };
   return (
@@ -241,26 +252,38 @@ function EditProductModal({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formdata = new FormData();
-
-    formdata.append("updated-id", form.id);
-    formdata.append("updated-title", form.title);
-    formdata.append("updated-caption", form.caption);
-
     try {
-      const response = await fetch(`/api/product/update`, {
-        method: "PUT",
-        body: formdata,
-      });
+      const formdata = new FormData();
 
-      const data = await response.json();
-      console.log(data.message);
-      console.log(data.updatedImageWithCaption);
-      router.refresh();
+      formdata.append("updated-id", form.id);
+      formdata.append("updated-title", form.title);
+      formdata.append("updated-caption", form.caption);
 
-      onCloseEditProductModal();
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(`/api/product/update`, {
+            method: "PUT",
+            body: formdata,
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to update product.");
+          }
+
+          return res.json();
+        })(),
+        {
+          pending: "Updating...",
+          success: "Product updated successfully.",
+          error: "An error occurred. Please try again.",
+        },
+      );
     } catch (error) {
-      console.log(`ERROR: ${error}`);
+      console.log(`$ERROR: ${error}`);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      router.refresh();
+      onCloseEditProductModal();
     }
   };
 

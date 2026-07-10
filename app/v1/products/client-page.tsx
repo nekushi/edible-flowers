@@ -11,6 +11,7 @@ import {
   primaryButtonClassName,
   secondaryButtonClassName,
 } from "./ui/shared";
+import { toast } from "react-toastify";
 
 export default function EfMenuProductsClient({
   imagesWithCaption,
@@ -196,24 +197,42 @@ function AddProductModal({
 
   const postProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!form.img_file) return;
 
-    const formData = new FormData();
+    try {
+      if (!form.img_file) return;
 
-    formData.append("title", form.title);
-    formData.append("caption", form.caption);
-    formData.append("price", String(form.price));
-    formData.append("img-file", form.img_file);
+      const formData = new FormData();
 
-    const response = await fetch("/api/product/upload", {
-      method: "POST",
-      body: formData,
-    });
+      formData.append("title", form.title);
+      formData.append("caption", form.caption);
+      formData.append("price", String(form.price));
+      formData.append("img-file", form.img_file);
 
-    const data = await response.json();
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch("/api/product/upload", {
+            method: "POST",
+            body: formData,
+          });
 
-    console.log(`FROM PAGE.TSX RESPONSE DATA`);
-    console.log(data);
+          if (!res.ok) {
+            throw new Error("Failed to add product.");
+          }
+
+          return res.json();
+        })(),
+        {
+          pending: "Uploading...",
+          success: "Product added successfully.",
+          error: "Something went wrong. Please try again.",
+        },
+      );
+    } catch (error) {
+      console.log(`$ERROR: ${error}`);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      onCloseAddProductModal();
+    }
   };
 
   return (
