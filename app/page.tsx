@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { LandingNav } from "./components/landing-nav";
 import { ScrollReveal } from "./components/scroll-reveal";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const products = [
   // make it dynamic soon
@@ -81,6 +83,8 @@ export default function EfLandingPage() {
     message: "",
   });
 
+  const formRef = useRef<HTMLFormElement | null>(null);
+
   const handleClientFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -99,18 +103,43 @@ export default function EfLandingPage() {
   ) => {
     e.preventDefault();
 
-    const response = await fetch(`/api/v1/client-email-request`, {
-      method: "POST",
-      body: JSON.stringify(clientForm),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(`/api/v1/client-email-request`, {
+            method: "POST",
+            body: JSON.stringify(clientForm),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
 
-    const data = await response.json();
+          if (!res.ok) {
+            throw new Error("Failed to submit inquiry");
+          }
 
-    console.log(`data FROM LANDING PAGE`);
-    console.log(data);
+          return res.json();
+        })(),
+        {
+          pending: "Sending...",
+          success: "Thanks for reaching out!",
+          error: "An error occurred. Please try again.",
+        },
+      );
+    } catch (error) {
+      console.log(`$ERROR: ${error}`);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setClientForm((prev) => ({
+        ...prev,
+        ...clientForm,
+        name: "",
+        email: "",
+        message: "",
+      }));
+
+      formRef.current?.reset();
+    }
   };
 
   return (
@@ -433,6 +462,7 @@ export default function EfLandingPage() {
                   // action={`mailto:shepabayo@gmail.com`}
                   // method="post"
                   encType="text/plain"
+                  ref={formRef}
                   onSubmit={handleClientFormSubmit}
                   className="rounded-2xl border border-blossom-200 bg-white p-6 shadow-sm sm:p-8"
                 >
