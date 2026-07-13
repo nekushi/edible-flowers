@@ -1,3 +1,4 @@
+import { Decimal } from "@/app/generated/prisma/internal/prismaNamespace";
 import prisma from "@/lib/db";
 
 export async function getImagesWithCaption(
@@ -20,6 +21,7 @@ export type TypeImageWithTitle = {
   product_title: string;
   caption: string;
   img_url: string;
+  price: number;
   createdAt: Date;
   updatedAt: Date;
 };

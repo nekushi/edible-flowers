@@ -83,9 +83,14 @@ export default function ImageWithTitleJSX({
           />
         </div>
         <div className="p-5 sm:p-6">
-          <h3 className="font-heading text-xl font-semibold text-cocoa-800">
-            {imageWithTitle.product_title}
-          </h3>
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="font-heading text-xl font-semibold text-cocoa-800">
+              {imageWithTitle.product_title}
+            </h3>
+            <p className="shrink-0 rounded-full bg-blossom-100 px-3 py-1 font-accent text-sm font-semibold text-blossom-700">
+              {formatProductPrice(imageWithTitle.price)}
+            </p>
+          </div>
           <p className="mt-2 text-sm leading-relaxed text-cocoa-600">
             {imageWithTitle.caption}
           </p>
@@ -220,10 +225,19 @@ function DeleteWarningModal({
   );
 }
 
+function formatProductPrice(price: number) {
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 2,
+  }).format(price);
+}
+
 type TypeEditProductForm = {
   id: string;
   title: string;
   caption: string;
+  price: number;
 };
 
 function EditProductModal({
@@ -239,13 +253,14 @@ function EditProductModal({
     id: imageWithTitle.id ?? "",
     title: imageWithTitle.product_title ?? "",
     caption: imageWithTitle.caption ?? "",
+    price: imageWithTitle.price ?? 0,
   });
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "price" ? Number(value) || 0 : value,
     }));
   };
 
@@ -258,6 +273,7 @@ function EditProductModal({
       formdata.append("updated-id", form.id);
       formdata.append("updated-title", form.title);
       formdata.append("updated-caption", form.caption);
+      formdata.append("updated-price", String(form.price));
 
       const response = await toast.promise(
         (async () => {
@@ -329,6 +345,23 @@ function EditProductModal({
               id={`product-caption`}
               value={form.caption}
               onChange={handleFormChange}
+              className={inputClassName}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label htmlFor={`product-price`} className={labelClassName}>
+            Product price
+            <input
+              type="number"
+              name="price"
+              id={`product-price`}
+              value={form.price || ""}
+              onChange={handleFormChange}
+              min={0}
+              step="0.01"
+              required
               className={inputClassName}
             />
           </label>

@@ -9,6 +9,7 @@ export async function updateImageWithCaption(body: FormData) {
   const targetId = String(body.get("updated-id"));
   const updatedTitle = String(body.get("updated-title"));
   const updatedCaption = String(body.get("updated-caption"));
+  const updatedPrice = Number(body.get("updated-price") ?? 0);
 
   const updatedImageWithCaption = await prisma.imageWithCaption.update({
     where: {
@@ -17,6 +18,7 @@ export async function updateImageWithCaption(body: FormData) {
     data: {
       product_title: updatedTitle,
       caption: updatedCaption,
+      price: updatedPrice,
       updatedAt: new Date(),
     },
   });
