@@ -70,6 +70,11 @@ const socialLinks = [
   },
 ];
 
+type ApiResponse = {
+  type: "success" | "error";
+  message: string;
+};
+
 export type TypeClientFormRequest = {
   name: string;
   email: string;
@@ -118,17 +123,32 @@ export default function EfLandingPage() {
             throw new Error("Failed to submit inquiry");
           }
 
-          return res.json();
+          const data: ApiResponse = await res.json();
+
+          if (data.type === "error") {
+            throw new Error(data.message);
+          }
+
+          return data;
         })(),
         {
           pending: "Sending...",
-          success: "Thanks for reaching out!",
-          error: "An error occurred. Please try again.",
+          success: {
+            render({ data }: { data: { message: string } }) {
+              return data.message;
+            },
+          },
+          error: {
+            render({ data }: { data: Error }) {
+              return data.message;
+            },
+          },
         },
       );
     } catch (error) {
       console.log(`$ERROR: ${error}`);
-      toast.error("An error occurred. Please try again.");
+      // toast.error(`An error occurred. Please try again. ${error}`);
+      // toast.error(`${error}`);
     } finally {
       setClientForm((prev) => ({
         ...prev,

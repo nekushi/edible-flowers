@@ -3,20 +3,19 @@ import { postClientEmailReq } from "@/dal/menu/inquiries/post/post-client-inquir
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  // const data = await req.formData();
-  // console.log("");
-
   const data: TypeClientFormRequest = await req.json();
 
-  console.log(`FROM CLIENT EMAIL REQ ROUTE`);
-
-  if (!data.name || !data.email || !data.message) return;
+  if (!data.name || !data.email || !data.message) {
+    return NextResponse.json({
+      type: "error",
+      message: "An error occurred. Please try again.",
+    });
+  }
 
   const clientEmailReq = await postClientEmailReq(data);
 
   return NextResponse.json({
     type: "success",
-    message: "success",
-    data: clientEmailReq,
+    message: "Thanks for reaching out!",
   });
 }
