@@ -1,6 +1,7 @@
 export type TypeHistoryOrder = {
   title: string;
   quantity: number;
+  price: number;
 };
 
 export type TypeHistoryEntry = {
@@ -25,6 +26,18 @@ function formatOrders(orders: TypeHistoryOrder[]) {
   }
 
   return orders.map((order) => `${order.quantity}× ${order.title}`).join(", ");
+}
+
+function formatProductPrice(price: number) {
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 2,
+  }).format(price);
+}
+
+function totalOrderIncome(orders: TypeHistoryOrder[]) {
+  return orders.reduce((sum, order) => sum + order.price, 0);
 }
 
 const thClassName =
@@ -80,6 +93,9 @@ export default function EfMenuHistoryClient({
                     <th scope="col" className={thClassName}>
                       Orders
                     </th>
+                    <th scope="col" className={thClassName}>
+                      Income
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-blossom-100">
@@ -106,6 +122,11 @@ export default function EfMenuHistoryClient({
                       </td>
                       <td className={`${tdClassName} text-cocoa-500`}>
                         {formatOrders(entry.orders)}
+                      </td>
+                      <td className={`${tdClassName} whitespace-nowrap font-accent font-semibold text-blossom-700`}>
+                        {entry.orders.length === 0
+                          ? "—"
+                          : formatProductPrice(totalOrderIncome(entry.orders))}
                       </td>
                     </tr>
                   ))}

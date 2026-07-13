@@ -13,6 +13,7 @@ export async function getDonePendings() {
         select: {
           title: true,
           quantity: true,
+          price: true,
         },
       },
     },
