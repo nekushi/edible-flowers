@@ -26,6 +26,7 @@ export async function postAdminClientInquiries(
                   title: data.title,
                   caption: data.caption,
                   quantity: data.quantity,
+                  price: data.price,
                   img_url: data.img_url,
                 },
               },

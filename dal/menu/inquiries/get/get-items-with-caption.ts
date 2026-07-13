@@ -11,6 +11,7 @@ export type TypeItemWithCaption = {
   product_title: string;
   caption: string;
   img_url: string;
+  price: number;
   createdAt: Date;
   updatedAt: Date;
 };

@@ -28,6 +28,7 @@ model Orders {
   title    String
   caption  String
   quantity Int
+  price    Float  @default(0)
   img_url  String
 
   client_email_request ClientEmailRequest @relation(fields: [order_id], references: [orders_id])

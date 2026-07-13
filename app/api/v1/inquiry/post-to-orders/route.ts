@@ -25,6 +25,7 @@ export type TypeAdminAttachInquiryProduct = {
   title: string;
   caption: string;
   quantity: number;
+  price: number;
   img_url: string;
 };
 

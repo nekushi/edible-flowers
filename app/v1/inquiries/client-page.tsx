@@ -24,8 +24,17 @@ export type TypeInquiredOrder = {
   title: string;
   caption: string;
   quantity: number;
+  price: number;
   img_url: string;
 };
+
+function formatProductPrice(price: number) {
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 2,
+  }).format(price);
+}
 
 function orderMatchesItem(order: TypeInquiredOrder, item: TypeItemWithCaption) {
   return (
@@ -42,7 +51,7 @@ const markReadButtonClassName =
   "inline-flex items-center justify-center rounded-full border border-blossom-300 bg-white px-4 py-2 font-accent text-sm font-semibold text-blossom-700 transition-all hover:border-blossom-400 hover:bg-blossom-50";
 
 const quantityStepperClassName =
-  "mt-2 inline-flex items-stretch overflow-hidden rounded-lg border border-blossom-200 bg-white shadow-sm";
+  "mt-2 inline-flex items-stretch overflow-hidden rounded-lg border border-blossom-200 bg-white shadow-sm relative";
 
 const quantityButtonClassName =
   "inline-flex h-8 w-8 shrink-0 items-center justify-center font-accent text-base font-semibold leading-none text-cocoa-600 transition-colors hover:bg-blossom-50 hover:text-blossom-700 active:bg-blossom-100";
@@ -134,6 +143,7 @@ export default function EfMenuInquiriesClient({
           title: item.product_title,
           caption: item.caption,
           quantity: 1,
+          price: item.price,
           img_url: item.img_url,
         },
       ];
@@ -156,7 +166,9 @@ export default function EfMenuInquiriesClient({
         }
 
         return prev.map((order) =>
-          orderMatchesItem(order, item) ? { ...order, quantity } : order,
+          orderMatchesItem(order, item)
+            ? { ...order, quantity, price: item.price * quantity }
+            : order,
         );
       }
 
@@ -171,6 +183,7 @@ export default function EfMenuInquiriesClient({
           title: item.product_title,
           caption: item.caption,
           quantity: delta,
+          price: item.price * delta,
           img_url: item.img_url,
         },
       ];
@@ -383,6 +396,8 @@ function AttachProductsModal({
             const isSelected = inquiredOrders.some((order) =>
               orderMatchesItem(order, item),
             );
+            const quantity = getQuantity(item);
+            const lineTotal = item.price * quantity;
 
             return (
               <li key={item.id}>
@@ -408,7 +423,7 @@ function AttachProductsModal({
                       className="object-cover"
                     />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="relative min-w-0 flex-1 pb-5">
                     <p className="truncate font-heading text-base font-semibold text-cocoa-800">
                       {item.product_title}
                     </p>
@@ -431,7 +446,7 @@ function AttachProductsModal({
                       <input
                         type="number"
                         min={0}
-                        value={getQuantity(item)}
+                        value={quantity}
                         readOnly
                         aria-label="Quantity"
                         className={quantityInputClassName}
@@ -445,6 +460,20 @@ function AttachProductsModal({
                         +
                       </button>
                     </div>
+                    <p className="absolute bottom-0 right-0 text-right font-accent text-sm font-semibold tabular-nums text-blossom-700">
+                      {quantity > 0 ? (
+                        <>
+                          <span className="text-xs font-medium text-cocoa-500">
+                            {formatProductPrice(item.price)} × {quantity}
+                          </span>
+                          <span className="mt-0.5 block">
+                            {formatProductPrice(lineTotal)}
+                          </span>
+                        </>
+                      ) : (
+                        formatProductPrice(item.price)
+                      )}
+                    </p>
                   </div>
                 </label>
               </li>
@@ -454,9 +483,17 @@ function AttachProductsModal({
       )}
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-blossom-100 pt-4">
-        <p className="text-sm text-cocoa-600">
-          {inquiredOrders.length} selected
-        </p>
+        <div className="text-sm text-cocoa-600">
+          <p>{inquiredOrders.length} selected</p>
+          {inquiredOrders.length > 0 && (
+            <p className="mt-1 font-accent font-semibold text-blossom-700">
+              Total{" "}
+              {formatProductPrice(
+                inquiredOrders.reduce((sum, order) => sum + order.price, 0),
+              )}
+            </p>
+          )}
+        </div>
         <button
           type="button"
           onClick={onInquiryToOrdersClick}
