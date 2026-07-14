@@ -52,7 +52,7 @@ function formatCompactPrice(price: number) {
 
 function getYesterdayPercentChange(
   yesterday: number,
-  dayBeforeYesterday: number,
+  dayBeforeYesterday: number
 ) {
   if (dayBeforeYesterday === 0) {
     if (yesterday === 0) {
@@ -100,7 +100,9 @@ function RevenueLineChart({ data }: { data: RevenueDataPoint[] }) {
   const points = data.map((point, index) => {
     const x =
       padding.left +
-      (data.length <= 1 ? chartWidth / 2 : (index / (data.length - 1)) * chartWidth);
+      (data.length <= 1
+        ? chartWidth / 2
+        : (index / (data.length - 1)) * chartWidth);
     const y =
       padding.top + chartHeight - (point.value / maxValue) * chartHeight;
 
@@ -207,7 +209,7 @@ export default function EfMenuDashboardClient({
 
   const yesterdayChange = getYesterdayPercentChange(
     kpis.inquiriesYesterday,
-    kpis.inquiriesDayBeforeYesterday,
+    kpis.inquiriesDayBeforeYesterday
   );
 
   useEffect(() => {
@@ -238,14 +240,14 @@ export default function EfMenuDashboardClient({
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "ClientEmailRequest",
         },
         (_payload: RealtimePostgresChangesPayload<{}>) => {
           notifyMe("You have 1 new notification");
           console.log(_payload);
-        },
+        }
       )
       .subscribe();
 
@@ -262,7 +264,7 @@ export default function EfMenuDashboardClient({
 
       try {
         const response = await fetch(
-          `/api/v1/dashboard/revenue?range=${revenueRange}`,
+          `/api/v1/dashboard/revenue?range=${revenueRange}`
         );
 
         if (!response.ok) {
@@ -337,7 +339,9 @@ export default function EfMenuDashboardClient({
                 </p>
               </div>
               <span
-                className={`rounded-full px-3 py-1 font-accent text-xs font-semibold ${percentToneClassName(yesterdayChange.tone)}`}
+                className={`rounded-full px-3 py-1 font-accent text-xs font-semibold ${percentToneClassName(
+                  yesterdayChange.tone
+                )}`}
               >
                 {yesterdayChange.label}
               </span>
@@ -458,7 +462,9 @@ export default function EfMenuDashboardClient({
 
             {isRevenueLoading ? (
               <div className="mt-8 rounded-xl border border-dashed border-blossom-200 bg-blossom-50/50 px-4 py-16 text-center">
-                <p className="text-sm text-cocoa-600">Loading revenue chart...</p>
+                <p className="text-sm text-cocoa-600">
+                  Loading revenue chart...
+                </p>
               </div>
             ) : revenueData.length === 0 ? (
               <div className="mt-8 rounded-xl border border-dashed border-blossom-200 bg-blossom-50/50 px-4 py-16 text-center">
