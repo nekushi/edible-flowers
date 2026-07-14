@@ -1,68 +1,18 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import { supabase } from "@/lib/supabase";
-import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
-import { useEffect } from "react";
+import {
+  getDashboardKpis,
+  getLatestInquiries,
+} from "@/dal/menu/dashboard/get/dashboard-stats";
+import EfMenuDashboardClient from "./client-page";
 
-export default function EfMenuDashboard() {
-  function notifyMe(notif?: string) {
-    if (!("Notification" in window)) {
-      // Check if the browser supports notifications
-      alert("This browser does not support desktop notification");
-    } else if (Notification.permission === "granted") {
-      // Check whether notification permissions have already been granted;
-      // if so, create a notification
-      // const notification = new Notification("Hi there!");
-      if (!notif) return;
-
-      const notification = new Notification(notif);
-      // …
-    } else if (Notification.permission !== "denied") {
-      // We need to ask the user for permission
-      Notification.requestPermission().then((permission) => {
-        // If the user accepts, let's create a notification
-        if (permission === "granted") {
-          // const notification = new Notification("Hi there!");
-          if (!notif) return;
-
-          const notification = new Notification(notif);
-
-          // …
-        }
-      });
-    }
-
-    // At last, if the user has denied notifications, and you
-    // want to be respectful there is no need to bother them anymore.
-  }
-
-  useEffect(() => {
-    notifyMe();
-
-    const channel = supabase
-      .channel("subscribing-client-inquiry-realtime")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "ClientEmailRequest",
-        },
-        (_payload: RealtimePostgresChangesPayload<{}>) => {
-          notifyMe("You have 1 new notification");
-          console.log(_payload);
-        },
-      )
-      .subscribe();
-
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, []);
+export default async function EfMenuDashboard() {
+  const [kpis, latestInquiries] = await Promise.all([
+    getDashboardKpis(),
+    getLatestInquiries(3),
+  ]);
 
   return (
-    <div>
-      <h1>This is edible flowers menu dashboard.</h1>
-    </div>
+    <EfMenuDashboardClient kpis={kpis} latestInquiries={latestInquiries} />
   );
 }
