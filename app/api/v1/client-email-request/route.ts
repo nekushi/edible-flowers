@@ -1,4 +1,4 @@
-import { TypeClientFormRequest } from "@/app/page";
+import { TypeClientFormRequest } from "@/app/z-landing-page-contents/types";
 import { postClientEmailReq } from "@/dal/menu/inquiries/post/post-client-inquiries";
 import { NextRequest, NextResponse } from "next/server";
 
