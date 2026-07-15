@@ -10,7 +10,7 @@ const navLinks = [
   { href: "#products", label: "Products" },
   { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
-];
+] as const;
 
 export function LandingNav() {
   const [open, setOpen] = useState(false);
