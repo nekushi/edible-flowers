@@ -13,28 +13,6 @@ import {
 import { ScrollReveal } from "../components/scroll-reveal";
 import { LandingNav } from "../components/landing-nav";
 
-// const products = [
-//   // make it dynamic soon
-//   {
-//     name: "Rose Garden Cupcakes",
-//     description:
-//       "Delicate buttercream roses atop vanilla cupcakes — perfect for celebrations.",
-//     image: "/edible-flowers/sample-product-1.jpg",
-//   },
-//   {
-//     name: "Spring Blossom Set",
-//     description:
-//       "A mix of pastel floral designs with edible petals and soft, fluffy frosting.",
-//     image: "/edible-flowers/sample-product-2.jpg",
-//   },
-//   {
-//     name: "Custom Floral Bouquet",
-//     description:
-//       "Handcrafted to match your theme — ideal for weddings, showers, and parties.",
-//     image: "/edible-flowers/sample-product-3.jpg",
-//   },
-// ];
-
 function formatProductPrice(price: number) {
   return new Intl.NumberFormat(undefined, {
     style: "currency",
