@@ -34,7 +34,7 @@ export default function HeroSection() {
               href="#products"
               className="inline-flex items-center justify-center rounded-full bg-blossom-500 px-6 py-3 font-accent text-sm font-semibold text-white shadow-md transition-all hover:bg-blossom-600 hover:shadow-lg"
             >
-              View Our Cupcakes
+              View Our Products
             </Link>
             <Link
               href="#contact"
