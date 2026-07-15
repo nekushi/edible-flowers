@@ -1,4 +1,4 @@
-import { TypeClientFormRequest } from "@/app/page";
+import { TypeClientFormRequest } from "@/app/z-landing-page-contents/types";
 import prisma from "@/lib/db";
 
 export async function postClientEmailReq(data: TypeClientFormRequest) {
