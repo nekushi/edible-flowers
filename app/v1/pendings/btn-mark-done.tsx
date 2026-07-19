@@ -1,6 +1,9 @@
 import { markDoneButtonClassName } from "./pending-cards";
+import { useRouter } from "next/navigation";
 
 export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
+  const router = useRouter();
+
   const handleMarkDoneClick = async (ordersId: string) => {
     const params = new URLSearchParams({
       orders_id: ordersId,
@@ -18,6 +21,8 @@ export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
     const data = await response.json();
 
     console.log(data);
+
+    router.refresh();
   };
 
   return (
