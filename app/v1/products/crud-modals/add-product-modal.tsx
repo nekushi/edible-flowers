@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import {
   fileInputClassName,
@@ -16,6 +17,7 @@ export default function AddProductModal({
 }: {
   onCloseAddProductModal: () => void;
 }) {
+  const router = useRouter();
   const [form, setForm] = useState<TypeAddProductForm>({
     title: "",
     caption: "",
@@ -87,6 +89,13 @@ export default function AddProductModal({
       toast.error("Something went wrong. Please try again.");
     } finally {
       onCloseAddProductModal();
+      setForm({
+        title: "",
+        caption: "",
+        price: 0,
+        img_file: null,
+      });
+      router.refresh();
     }
   };
 

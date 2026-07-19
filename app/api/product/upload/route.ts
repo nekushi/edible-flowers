@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     data: {
       product_title: title,
       caption,
+      price: Number(price),
       img_url: imgPublicUrl,
     },
   });
