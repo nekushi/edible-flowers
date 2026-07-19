@@ -148,8 +148,48 @@ export default function EfMenuInquiriesClient({
     }
   };
 
-  const handleDeleteOrIgnore = (inquiryId: string) => {
-    setInquiries((prev) => prev.filter((inquiry) => inquiry.id !== inquiryId));
+  const handleDeleteOrIgnore = async (inquiryId: string) => {
+    // setInquiries((prev) => prev.filter((inquiry) => inquiry.id !== inquiryId));
+    const params = new URLSearchParams({
+      id: inquiryId,
+    });
+
+    try {
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(`/api/v1/inquiry/delete?${params}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to delete inquiry.");
+          }
+
+          const data: ApiResponse = await res.json();
+
+          if (data.type === "error") {
+            throw new Error(data.message);
+          }
+
+          return data;
+        })(),
+        {
+          pending: "Deleting inquiry...",
+          success: {
+            render({ data }: { data: { message: string } }) {
+              return data.message;
+            },
+          },
+          error: {
+            render({ data }: { data: Error }) {
+              return data.message;
+            },
+          },
+        }
+      );
+    } catch (error) {
+      console.log(`$ERROR: ${error}`);
+    }
   };
 
   const handleOpenAttachProducts = (inquiryId: string) => {
