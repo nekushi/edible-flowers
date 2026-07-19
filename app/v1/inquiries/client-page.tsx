@@ -8,6 +8,8 @@ import {
   ModalShell,
   secondaryButtonClassName,
 } from "../products/ui/shared";
+import { toast } from "react-toastify";
+import { ApiResponse } from "@/app/z-landing-page-contents/types";
 
 export type TypeInquiry = {
   id: string;
@@ -93,7 +95,7 @@ export default function EfMenuInquiriesClient({
   };
 
   const activeInquiry = inquiries.find(
-    (inquiry) => inquiry.id === activeInquiryId,
+    (inquiry) => inquiry.id === activeInquiryId
   );
   const activeOrdersId = activeInquiry?.orders_id ?? null;
 
@@ -103,16 +105,91 @@ export default function EfMenuInquiriesClient({
 
   const unreadCount = inquiries.filter((inquiry) => !inquiry.is_read).length;
 
-  const handleMarkAsRead = (inquiryId: string) => {
-    setInquiries((prev) =>
-      prev.map((inquiry) =>
-        inquiry.id === inquiryId ? { ...inquiry, is_read: true } : inquiry,
-      ),
-    );
+  const handleMarkAsRead = async (inquiryId: string) => {
+    const params = new URLSearchParams({
+      id: inquiryId,
+    });
+
+    try {
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(`/api/v1/inquiry/mark-as-read?${params}`, {
+            method: "PATCH",
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to patch inquiry.");
+          }
+
+          const data: ApiResponse = await res.json();
+
+          if (data.type === "error") {
+            throw new Error(data.message);
+          }
+
+          return data;
+        })(),
+        {
+          pending: "Marking as read...",
+          success: {
+            render({ data }: { data: { message: string } }) {
+              return data.message;
+            },
+          },
+          error: {
+            render({ data }: { data: Error }) {
+              return data.message;
+            },
+          },
+        }
+      );
+    } catch (error) {
+      console.log(`$ERROR: ${error}`);
+    }
   };
 
-  const handleDeleteOrIgnore = (inquiryId: string) => {
-    setInquiries((prev) => prev.filter((inquiry) => inquiry.id !== inquiryId));
+  const handleDeleteOrIgnore = async (inquiryId: string) => {
+    // setInquiries((prev) => prev.filter((inquiry) => inquiry.id !== inquiryId));
+    const params = new URLSearchParams({
+      id: inquiryId,
+    });
+
+    try {
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(`/api/v1/inquiry/delete?${params}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            throw new Error("Failed to delete inquiry.");
+          }
+
+          const data: ApiResponse = await res.json();
+
+          if (data.type === "error") {
+            throw new Error(data.message);
+          }
+
+          return data;
+        })(),
+        {
+          pending: "Deleting inquiry...",
+          success: {
+            render({ data }: { data: { message: string } }) {
+              return data.message;
+            },
+          },
+          error: {
+            render({ data }: { data: Error }) {
+              return data.message;
+            },
+          },
+        }
+      );
+    } catch (error) {
+      console.log(`$ERROR: ${error}`);
+    }
   };
 
   const handleOpenAttachProducts = (inquiryId: string) => {
@@ -127,7 +204,7 @@ export default function EfMenuInquiriesClient({
 
   const handleToggleInquiredOrder = (
     item: TypeItemWithCaption,
-    ordersId: string,
+    ordersId: string
   ) => {
     setInquiredOrders((prev) => {
       const isSelected = prev.some((order) => orderMatchesItem(order, item));
@@ -153,7 +230,7 @@ export default function EfMenuInquiriesClient({
   const handleInquiredOrderQuantityChange = (
     item: TypeItemWithCaption,
     ordersId: string,
-    delta: number,
+    delta: number
   ) => {
     setInquiredOrders((prev) => {
       const existing = prev.find((order) => orderMatchesItem(order, item));
@@ -168,7 +245,7 @@ export default function EfMenuInquiriesClient({
         return prev.map((order) =>
           orderMatchesItem(order, item)
             ? { ...order, quantity, price: item.price * quantity }
-            : order,
+            : order
         );
       }
 
@@ -358,7 +435,7 @@ function AttachProductsModal({
   onInquiredOrderQuantityChange: (
     item: TypeItemWithCaption,
     ordersId: string,
-    delta: number,
+    delta: number
   ) => void;
   onClose: () => void;
   onInquiryToOrdersClick: () => void;
@@ -394,7 +471,7 @@ function AttachProductsModal({
         <ul className="mt-6 max-h-[50vh] space-y-3 overflow-y-auto pr-1">
           {itemsWithCaption.map((item) => {
             const isSelected = inquiredOrders.some((order) =>
-              orderMatchesItem(order, item),
+              orderMatchesItem(order, item)
             );
             const quantity = getQuantity(item);
             const lineTotal = item.price * quantity;
@@ -489,7 +566,7 @@ function AttachProductsModal({
             <p className="mt-1 font-accent font-semibold text-blossom-700">
               Total{" "}
               {formatProductPrice(
-                inquiredOrders.reduce((sum, order) => sum + order.price, 0),
+                inquiredOrders.reduce((sum, order) => sum + order.price, 0)
               )}
             </p>
           )}
