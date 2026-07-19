@@ -2,7 +2,7 @@ import { Decimal } from "@/app/generated/prisma/internal/prismaNamespace";
 import prisma from "@/lib/db";
 
 export async function getImagesWithCaption(
-  title?: string,
+  title?: string
 ): Promise<TypeImageWithTitle[]> {
   const imagesWithCaption = await prisma.imageWithCaption.findMany({
     where: {
@@ -10,6 +10,9 @@ export async function getImagesWithCaption(
         contains: title,
         mode: "insensitive",
       },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
