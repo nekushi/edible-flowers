@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { DeleteIcon } from "../products/ui/shared";
 import Image from "next/image";
 import { TypePendingInquiry, TypePendingOrder } from "./page";
+import EfBtnMarkDone from "./btn-mark-done";
+import EfBtnRemovePendings from "./btn-remove-pendings";
 
-const markDoneButtonClassName =
+export const markDoneButtonClassName =
   "inline-flex items-center justify-center gap-2 rounded-full border border-blossom-300 bg-white px-2 py-2 font-accent text-sm font-semibold text-blossom-700 transition-all hover:border-blossom-400 hover:bg-blossom-50";
 
-const deleteIconButtonClassName =
+export const deleteIconButtonClassName =
   "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-blossom-200 bg-white text-cocoa-500 transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600";
 
 function formatPendingDate(value: string | Date) {
@@ -29,45 +30,6 @@ export function PendingInquiryCard({
 }) {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const itemCount = totalItems(pending.orders);
-  const ordersPanelId = `pending-orders-${pending.id}`;
-
-  const handleMarkDoneClick = async (ordersId: string) => {
-    const params = new URLSearchParams({
-      orders_id: ordersId,
-    });
-
-    console.log(params.toString());
-
-    const response = await fetch(
-      `/api/v1/pendings/mark-done?${params.toString()}`,
-      {
-        method: "PATCH",
-      },
-    );
-
-    const data = await response.json();
-
-    console.log(data);
-  };
-
-  const handleDeleteClick = async (ordersId: string) => {
-    const params = new URLSearchParams({
-      orders_id: ordersId,
-    });
-
-    console.log(params.toString());
-
-    const response = await fetch(
-      `/api/v1/pendings/delete?${params.toString()}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    const data = await response.json();
-
-    console.log(data);
-  };
 
   return (
     <li className="overflow-hidden rounded-2xl border border-blossom-200 bg-white shadow-sm">
@@ -97,36 +59,8 @@ export function PendingInquiryCard({
               {itemCount} {itemCount === 1 ? "item" : "items"}
             </span>
             <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                aria-label="Mark as done"
-                onClick={() => handleMarkDoneClick(pending.orders_id)}
-                className={markDoneButtonClassName}
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {/* Mark done */}
-              </button>
-              <button
-                type="button"
-                aria-label="Delete pending"
-                onClick={() => handleDeleteClick(pending.orders_id)}
-                className={deleteIconButtonClassName}
-              >
-                <DeleteIcon />
-              </button>
+              <EfBtnMarkDone pendingId={pending.orders_id} />
+              <EfBtnRemovePendings pendingId={pending.orders_id} />
             </div>
           </div>
         </div>
@@ -134,7 +68,6 @@ export function PendingInquiryCard({
         <button
           type="button"
           aria-expanded={isOrdersOpen}
-          aria-controls={ordersPanelId}
           onClick={() => setIsOrdersOpen((open) => !open)}
           className="mt-4 flex w-full items-center justify-between gap-3 rounded-xl border border-blossom-200 bg-white px-4 py-3 text-left transition-colors hover:border-blossom-300 hover:bg-blossom-50/40"
         >
@@ -163,7 +96,7 @@ export function PendingInquiryCard({
 
       {isOrdersOpen && (
         <ul
-          id={ordersPanelId}
+          id={pending.id}
           className="divide-y divide-blossom-100 border-t border-blossom-100"
         >
           {pending.orders.map((order) => (
