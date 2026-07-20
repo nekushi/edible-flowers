@@ -5,7 +5,7 @@ import { getItemsWithCaption } from "@/dal/menu/inquiries/get/get-items-with-cap
 import EfMenuInquiriesClient, { formatInquiryDate } from "./client-page";
 import EfBtnMarkRead from "./btn-mark-read";
 import EfBtnDeleteInquiry from "./btn-delete-inquiry";
-import EfBtnAttachProducts from "./btn-attach-product";
+// import EfBtnAttachProducts from "./btn-attach-product";
 
 export default async function EfMenuInquiries() {
   const [inquiries, itemsWithCaption] = await Promise.all([
