@@ -39,7 +39,7 @@ export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
           return data;
         })(),
         {
-          pending: "Sending...",
+          pending: "Marking as done...",
           success: {
             render({ data }: { data: { message: string } }) {
               return data.message;
