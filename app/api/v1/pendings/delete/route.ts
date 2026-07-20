@@ -10,17 +10,18 @@ export async function DELETE(req: NextRequest) {
   const ordersId = searchParams.get("orders_id");
   console.log(ordersId);
 
-  if (!ordersId)
+  // if (true) {
+  if (!ordersId) {
     return NextResponse.json({
       type: "error",
       message: "Nullish id??",
     });
+  }
 
   const deletedPending = await deletingPending(ordersId);
 
-  revalidatePath("/v1/pendings");
-
   return NextResponse.json({
-    message: deletedPending,
+    type: "success",
+    message: "Pending deleted successfully.",
   });
 }
