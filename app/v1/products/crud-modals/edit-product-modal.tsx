@@ -57,7 +57,7 @@ export default function EditProductModal({
 
       const response = await toast.promise(
         (async () => {
-          const res = await fetch(`/api/product/update`, {
+          const res = await fetch(`/api/v1/product/update`, {
             method: "PUT",
             body: formdata,
           });

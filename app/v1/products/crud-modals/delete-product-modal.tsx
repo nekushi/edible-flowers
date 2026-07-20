@@ -33,10 +33,13 @@ export default function DeleteWarningModal({
 
       const response = await toast.promise(
         (async () => {
-          const res = await fetch(`/api/product/delete?${params.toString()}`, {
-            method: "DELETE",
-            body: params,
-          });
+          const res = await fetch(
+            `/api/v1/product/delete?${params.toString()}`,
+            {
+              method: "DELETE",
+              body: params,
+            },
+          );
 
           if (!res.ok) {
             throw new Error("Failed to delete product.");
