@@ -14,21 +14,12 @@ export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
     console.log(params.toString());
 
     try {
-      //   const response = await fetch(
-      //   `/api/v1/pendings/mark-done?${params.toString()}`,
-      //   {
-      //     method: "PATCH",
-      //   },
-      // );
-
-      // const data = await response.json();
       const response = await toast.promise(
         (async () => {
           const res = await fetch(
             `/api/v1/pendings/mark-done?${params.toString()}`,
             {
               method: "PATCH",
-              // body: JSON.stringify(clientForm),
               headers: {
                 "Content-Type": "application/json",
               },
@@ -62,34 +53,10 @@ export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
         },
       );
 
-      // router.refresh();
+      router.refresh();
     } catch (error) {
       console.log(`$ERROR: ${error}`);
-      // toast.error(`An error occurred. Please try again. ${error}`);
-      // toast.error(`${error}`);
-    } finally {
-      // setClientForm((prev) => ({
-      //   ...prev,
-      //   ...clientForm,
-      //   name: "",
-      //   email: "",
-      //   message: "",
-      // }));
-      // formRef.current?.reset();
     }
-
-    // const response = await fetch(
-    //   `/api/v1/pendings/mark-done?${params.toString()}`,
-    //   {
-    //     method: "PATCH",
-    //   },
-    // );
-
-    // const data = await response.json();
-
-    // console.log(data);
-
-    // router.refresh();
   };
 
   return (
