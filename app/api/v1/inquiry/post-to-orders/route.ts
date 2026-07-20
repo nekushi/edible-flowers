@@ -2,21 +2,13 @@ import { postAdminClientInquiries } from "@/dal/menu/inquiries/post/post-admin-c
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const data = (await req.json()) as TypeAdminAttachInquiryProduct[];
-
-  // console.log(`from POST inquiry`);
-  // console.log(data);
+  const data = await req.json();
 
   const newOrders = await postAdminClientInquiries(data);
 
-  console.log(`from POST inquiry`);
-  console.log(newOrders);
-
-  // data.map(async (d: TypeAdminAttachInquiryProduct) => {
-  // });
-
   return NextResponse.json({
-    message: "Nice",
+    type: "success",
+    message: "Attached products successfully.",
   });
 }
 
@@ -28,7 +20,3 @@ export type TypeAdminAttachInquiryProduct = {
   price: number;
   img_url: string;
 };
-
-// type TypeClientOrders = {
-
-// }
