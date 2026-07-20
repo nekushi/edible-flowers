@@ -67,7 +67,7 @@ export default function AddProductModal({
 
       const response = await toast.promise(
         (async () => {
-          const res = await fetch("/api/product/upload", {
+          const res = await fetch("/api/v1/product/upload", {
             method: "POST",
             body: formData,
           });

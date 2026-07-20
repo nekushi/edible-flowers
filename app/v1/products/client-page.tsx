@@ -34,7 +34,7 @@ export default function EfMenuProductsClient({
 
     console.log(params.toString());
 
-    const response = await fetch(`/api/product/search?${params.toString()}`);
+    const response = await fetch(`/api/v1/product/search?${params.toString()}`);
     const data = await response.json();
 
     const imagesWithTitleArray: TypeImageWithTitle[] = data.searchProductTitle;
