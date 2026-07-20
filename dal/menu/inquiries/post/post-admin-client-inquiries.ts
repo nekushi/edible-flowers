@@ -4,14 +4,6 @@ import prisma from "@/lib/db";
 export async function postAdminClientInquiries(
   datum: TypeAdminAttachInquiryProduct[],
 ) {
-  // console.log(`datum FROM POST ROUTE DAL`);
-  // console.log(datum);
-
-  //   await prisma.$transaction(async (ctx) => {
-  //     await Promise.all(
-  //       datum.map((data: TypeAdminAttachInquiryProduct) =>
-  //         ctx.clientEmailRequest.update({
-
   try {
     await prisma.$transaction(async (ctx) => {
       await Promise.all(
@@ -21,6 +13,7 @@ export async function postAdminClientInquiries(
               orders_id: data.order_id,
             },
             data: {
+              is_read: true,
               orders: {
                 create: {
                   title: data.title,
@@ -35,17 +28,7 @@ export async function postAdminClientInquiries(
         }),
       );
     });
-
-    return {
-      type: "success",
-      message: "Added items to pending successfully.",
-    };
   } catch (err) {
     console.log(`ERROR: ${err}`);
-
-    return {
-      type: "error",
-      message: err,
-    };
   }
 }

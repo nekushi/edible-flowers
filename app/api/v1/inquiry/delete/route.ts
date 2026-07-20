@@ -4,19 +4,18 @@ import { NextRequest, NextResponse } from "next/server";
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
-  console.log(searchParams);
   const id = searchParams.get("id");
 
   if (!id) {
     return NextResponse.json(
       {
         type: "error",
-        message: "Failed to mark as read. Try again.",
+        message: "Failed to delete. Try again.",
       },
       {
         status: 400,
         statusText: "Bad Request",
-      }
+      },
     );
   }
 
@@ -33,6 +32,6 @@ export async function DELETE(req: NextRequest) {
     {
       status: 200,
       statusText: "OK",
-    }
+    },
   );
 }
