@@ -1,5 +1,7 @@
+import { toast } from "react-toastify";
 import { markDoneButtonClassName } from "./pending-cards";
 import { useRouter } from "next/navigation";
+import { ApiResponse } from "@/app/z-landing-page-contents/types";
 
 export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
   const router = useRouter();
@@ -11,18 +13,83 @@ export default function EfBtnMarkDone({ pendingId }: { pendingId: string }) {
 
     console.log(params.toString());
 
-    const response = await fetch(
-      `/api/v1/pendings/mark-done?${params.toString()}`,
-      {
-        method: "PATCH",
-      },
-    );
+    try {
+      //   const response = await fetch(
+      //   `/api/v1/pendings/mark-done?${params.toString()}`,
+      //   {
+      //     method: "PATCH",
+      //   },
+      // );
 
-    const data = await response.json();
+      // const data = await response.json();
+      const response = await toast.promise(
+        (async () => {
+          const res = await fetch(
+            `/api/v1/pendings/mark-done?${params.toString()}`,
+            {
+              method: "PATCH",
+              // body: JSON.stringify(clientForm),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
 
-    console.log(data);
+          if (!res.ok) {
+            throw new Error("Failed to mark done a pending.");
+          }
 
-    router.refresh();
+          const data: ApiResponse = await res.json();
+
+          if (data.type === "error") {
+            throw new Error(data.message);
+          }
+
+          return data;
+        })(),
+        {
+          pending: "Sending...",
+          success: {
+            render({ data }: { data: { message: string } }) {
+              return data.message;
+            },
+          },
+          error: {
+            render({ data }: { data: Error }) {
+              return data.message;
+            },
+          },
+        },
+      );
+
+      // router.refresh();
+    } catch (error) {
+      console.log(`$ERROR: ${error}`);
+      // toast.error(`An error occurred. Please try again. ${error}`);
+      // toast.error(`${error}`);
+    } finally {
+      // setClientForm((prev) => ({
+      //   ...prev,
+      //   ...clientForm,
+      //   name: "",
+      //   email: "",
+      //   message: "",
+      // }));
+      // formRef.current?.reset();
+    }
+
+    // const response = await fetch(
+    //   `/api/v1/pendings/mark-done?${params.toString()}`,
+    //   {
+    //     method: "PATCH",
+    //   },
+    // );
+
+    // const data = await response.json();
+
+    // console.log(data);
+
+    // router.refresh();
   };
 
   return (
