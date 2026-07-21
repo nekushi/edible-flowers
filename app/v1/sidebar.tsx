@@ -66,8 +66,8 @@ export default function EfMenuSidebar({ username }: { username: string }) {
 const navLinks = [
   { href: "/v1/dashboard", label: "Dashboard" },
   { href: "/v1/products", label: "Products" },
-  { href: "/v1/pendings", label: "Pendings" },
-  { href: "/v1/inquiries", label: "Inquiries" },
+  { href: "/v1/pendings", label: "Pending Orders" },
+  { href: "/v1/inquiries", label: "Inbox" },
   { href: "/v1/history", label: "History" },
   { href: "/v1/settings", label: "Settings" },
 ] as const;
