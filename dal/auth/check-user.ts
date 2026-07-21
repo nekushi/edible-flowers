@@ -6,6 +6,7 @@ export async function checkUser(username: string): Promise<ApiResponse> {
   const user: TypeUserLogin | null = await prisma.users.findUnique({
     where: { username },
     select: {
+      id: true,
       username: true,
       password: true,
     },

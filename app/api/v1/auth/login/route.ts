@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkUser } from "@/dal/auth/check-user";
 import { logUser } from "@/dal/auth/log-user";
 import { ApiResponse } from "@/app/z-landing-page-contents/types";
-import { TypeUserLogin } from "@/app/login/login-form";
+import { TypeUserLogin, TypeUserLoginWithId } from "@/app/login/login-form";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -26,9 +26,11 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const verifiedUser: TypeUserLogin = JSON.parse(user.message);
+  // const verifiedUser: TypeUserLogin<Omit > = JSON.parse(user.message);
+  const verifiedUser: TypeUserLoginWithId = JSON.parse(user.message);
 
   const loggedUser = await logUser(
+    verifiedUser.id,
     verifiedUser.username,
     verifiedUser.password,
     password,

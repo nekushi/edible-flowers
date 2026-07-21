@@ -7,10 +7,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ApiResponse } from "../z-landing-page-contents/types";
 
-export type TypeUserLogin = {
+export type TypeUserLoginWithId = {
+  id: string;
   username: string;
   password: string;
 };
+
+export type TypeUserLogin = Omit<TypeUserLoginWithId, "id">;
 
 export default function EfLoginForm() {
   const router = useRouter();

@@ -1,9 +1,11 @@
 import { TypeUserLogin } from "@/app/login/login-form";
+import { createSession } from "@/lib/session";
 
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 
 export async function logUser(
+  verifiedId: string,
   verifiedUsername: string,
   verifiedPassword: string,
   inputPassword: string,
@@ -18,6 +20,8 @@ export async function logUser(
       message: "Wrong password. Try again.",
     };
   }
+
+  await createSession(verifiedId, verifiedUsername);
 
   return {
     type: "success",
