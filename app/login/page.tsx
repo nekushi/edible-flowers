@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import EfLoginForm from "./login-form";
 
 export default function EfLoginPage() {
   return (
@@ -41,55 +42,7 @@ export default function EfLoginPage() {
           </p>
         </div>
 
-        <form
-          action=""
-          className="mt-8 w-full rounded-2xl border border-blossom-200 bg-white p-6 shadow-md sm:p-10"
-        >
-          <div className="space-y-6">
-            <div>
-              <label
-                htmlFor="username"
-                className="block font-accent text-sm font-medium text-cocoa-700"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                autoComplete="username"
-                required
-                className="mt-1.5 w-full rounded-lg border border-blossom-200 bg-blossom-50/50 px-4 py-3 text-sm text-cocoa-800 outline-none transition-colors focus:border-blossom-400 focus:ring-2 focus:ring-blossom-200"
-                placeholder="Enter your username"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block font-accent text-sm font-medium text-cocoa-700"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                autoComplete="current-password"
-                required
-                className="mt-1.5 w-full rounded-lg border border-blossom-200 bg-blossom-50/50 px-4 py-3 text-sm text-cocoa-800 outline-none transition-colors focus:border-blossom-400 focus:ring-2 focus:ring-blossom-200"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full rounded-full bg-blossom-500 py-3.5 font-accent text-sm font-semibold text-white shadow-md transition-all hover:bg-blossom-600 hover:shadow-lg"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
+        <EfLoginForm />
 
         <div className="mt-8 flex w-full flex-col items-center gap-3 text-center text-sm text-cocoa-600">
           <Link
