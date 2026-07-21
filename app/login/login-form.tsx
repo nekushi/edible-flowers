@@ -34,8 +34,6 @@ export default function EfLoginForm() {
       ...prev,
       [name]: value,
     }));
-
-    console.log(loginForm);
   };
 
   const handleLoginFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
