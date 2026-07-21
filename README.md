@@ -8,8 +8,7 @@
 - accepting/deleting inquiries from `contact section`
 - image management CRUD for admin
 - dashboard to track transaction record history
-- (middleware for authentication)
--
+- middleware for authentication
 
 ##### Stack:
 
